@@ -10,6 +10,7 @@ var (
 
 type LRU[T any] struct {
 	capacity int
+	storage  map[string]T
 }
 
 func New[T any](capacity int) (*LRU[T], error) {
@@ -19,7 +20,17 @@ func New[T any](capacity int) (*LRU[T], error) {
 
 	c := &LRU[T]{
 		capacity: capacity,
+		storage:  make(map[string]T, capacity),
 	}
 
 	return c, nil
+}
+
+func (c *LRU[T]) Add(key string, value T) {
+	c.storage[key] = value
+}
+
+func (c *LRU[T]) Get(key string) (T, bool) {
+	value, ok := c.storage[key]
+	return value, ok
 }
