@@ -38,7 +38,7 @@ func Test_New(t *testing.T) {
 				name: "Should be able to instantiate a LRU with the correct storage capacity",
 				want: &LRU[string]{
 					capacity: 10,
-					storage:  make(map[string]string, 10),
+					storage:  make(map[string]*entry[string], 10),
 				},
 				capacity: 10,
 			},
