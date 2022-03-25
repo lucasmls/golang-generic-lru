@@ -1,2 +1,5 @@
 # Asdf related files
 .tool-versions
+
+# VS Code related files
+.vscode
