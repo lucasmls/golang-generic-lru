@@ -3,6 +3,7 @@ package lru
 import (
 	"container/list"
 	"errors"
+	"sync"
 )
 
 var (
@@ -18,6 +19,7 @@ type LRU[T any] struct {
 	capacity     int
 	storage      map[string]*list.Element
 	evictionList list.List
+	lock         sync.RWMutex
 }
 
 func New[T any](capacity int) (*LRU[T], error) {
@@ -36,6 +38,9 @@ func New[T any](capacity int) (*LRU[T], error) {
 }
 
 func (c *LRU[T]) Add(key string, value T) (evicted bool) {
+	c.lock.Lock()
+	defer c.lock.Unlock()
+
 	if el, ok := c.storage[key]; ok {
 		en := el.Value.(*entry[T])
 		en.Value = value
@@ -68,6 +73,9 @@ func (c *LRU[T]) Add(key string, value T) (evicted bool) {
 }
 
 func (c *LRU[T]) Get(key string) (t T, ok bool) {
+	c.lock.Lock()
+	defer c.lock.Unlock()
+
 	el, ok := c.storage[key]
 	if !ok {
 		return t, false
